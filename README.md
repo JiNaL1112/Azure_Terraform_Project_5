@@ -30,58 +30,7 @@
 
 Shows the complete CI/CD pipeline from developer commit through Terraform provisioning to live application delivery.
 
-```cloud-architecture-diagram
-Git [icon: git]
-DevOps Teams [icon: azure-users]
-Terraform [icon: terraform]
-
-Resource Group [icon: azure-resource] {
-  VNET [icon: azure-vnet] {
-    VMSS [icon: azure-vmss] {
-      Security Group [icon: azure-network-security-groups] {
-        Helm [icon: helm]
-        ArgoCD [icon: argo]
-        AKS [icon: azure-aks]
-      }
-      Managed Identity [icon: azure-managed-identities]
-      Key Vault [icon: azure-key-vaults]
-      ExternalLB [icon: load-balancer]
-      Public IP Address1 [icon: azure-public-ip-addresses]
-      Public IP Address2 [icon: azure-public-ip-addresses]
-    }
-  }
-}
-
-DevOps Teams2 [icon: users]
-Users [icon: users]
-
-// CI/CD & provisioning
-DevOps Teams > Git: commit
-DevOps Teams > Terraform: provision
-Git > Terraform: trigger
-Terraform > Resource Group: deploy infra
-
-// GitOps sync
-Git > ArgoCD: GitOps sync
-
-// Cluster bootstrap
-Helm > ArgoCD: installs
-ArgoCD > AKS: deploys app
-
-// Secret management
-AKS > Managed Identity: uses identity
-Managed Identity > Key Vault: authenticates
-AKS > Key Vault: fetch secrets
-
-// Traffic exposure
-AKS > ExternalLB: exposes services
-ExternalLB > Public IP Address1: ArgoCD UI
-ExternalLB > Public IP Address2: app traffic
-
-// End user access
-Public IP Address1 > DevOps Teams2: manage cluster
-Public IP Address2 > Users: serves app
-```
+![Hight-level Diagram](images/diagram-export-4-1-2026-4_40_05-PM.png)
 
 ---
 
@@ -89,82 +38,7 @@ Public IP Address2 > Users: serves app
 
 Shows the internal AKS structure — namespaces, deployments, pods, services, secrets, storage, and ingress for the 3-tier application.
 
-```cloud-architecture-diagram
-Azure [icon: azure] {
-  Key Vault [icon: azure-key-vaults]
-  Managed Identity [icon: azure-managed-identities]
-  Disk [icon: azure-disks]
-
-  AKS [icon: azure-aks] {
-    PV [icon: k8s-pv]
-
-    Namespace ESO [icon: kubernetes-namespace] {
-      External Secrets Operator [icon: k8s-service]
-    }
-
-    Namespace App [icon: kubernetes-namespace] {
-      Secret Store [icon: k8s-secret]
-      External Secret [icon: k8s-secret]
-      Credentials [icon: k8s-secret]
-
-      Postgres Deployment [icon: k8s-deploy]
-      Postgres Pod [icon: k8s-pod]
-      Postgres Endpoint [icon: k8s-ep]
-      Postgres SVC [icon: k8s-svc]
-      PVC [icon: k8s-pvc]
-
-      Backend Deployment [icon: k8s-deploy]
-      Backend Pod [icon: k8s-pod]
-      Backend Endpoint [icon: k8s-ep]
-      Backend SVC [icon: k8s-svc]
-
-      Frontend Deployment [icon: k8s-deploy]
-      Frontend Pod [icon: k8s-pod]
-      Frontend Endpoint [icon: k8s-ep]
-      Frontend SVC [icon: k8s-svc]
-
-      Ingress [icon: k8s-ing]
-    }
-  }
-}
-
-User [icon: azure-users]
-
-// Secret management flow
-External Secrets Operator > Managed Identity: authenticates via
-Managed Identity > Key Vault: access granted
-Key Vault > External Secret: syncs secret values
-External Secret > Secret Store: references
-External Secret > Credentials: creates k8s secret
-
-// Storage flow
-PVC > PV: binds
-PV > Disk: backed by Azure Disk
-
-// PostgreSQL tier
-Postgres Deployment > Postgres Pod: manages
-Credentials > Postgres Pod: injects POSTGRES_USER / PASSWORD / DB
-PVC > Postgres Pod: mounts /var/lib/postgresql/data
-Postgres Pod > Postgres Endpoint: registers
-Postgres Endpoint > Postgres SVC: exposes port 5432
-
-// Backend tier
-Backend Deployment > Backend Pod: manages
-Credentials > Backend Pod: injects DB_NAME / DB_USERNAME / DB_PASSWORD
-Backend Pod > Postgres SVC: connects DB_HOST:5432
-Backend Pod > Backend Endpoint: registers
-Backend Endpoint > Backend SVC: exposes port 8080
-
-// Frontend tier
-Frontend Deployment > Frontend Pod: manages
-Frontend Pod > Backend SVC: BACKEND_URL http://backend:8080
-Frontend Pod > Frontend Endpoint: registers
-Frontend Endpoint > Frontend SVC: exposes port 3000
-
-// Ingress & user traffic
-Ingress > Frontend SVC: route / to port 3000
-User > Ingress: HTTPS request
-```
+![ Internal Architecture](images/diagram-export-4-1-2026-5_38_11-PM.png)
 
 ---
 
@@ -307,7 +181,7 @@ kubectl get namespaces
 kubectl get all -A
 ```
 
-![kubectl get nodes — both nodes STATUS Ready, correct kubernetes version](Pasted%20image%2020260401152229.png)
+![kubectl get nodes — both nodes STATUS Ready, correct kubernetes version](images/Pasted%20image%2020260401152229.png)
 
 > All nodes show `STATUS: Ready`. The dev cluster runs auto-scaling (min 1, max 5 nodes).
 
@@ -332,7 +206,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret \
   -o jsonpath="{.data.password}" | base64 -d && echo
 ```
 
-![ArgoCD pods all Running, argocd-server LoadBalancer with external IP, 3tirewebapp-dev application Synced and Healthy](Pasted%20image%2020260401152358.png)
+![ArgoCD pods all Running, argocd-server LoadBalancer with external IP, 3tirewebapp-dev application Synced and Healthy](images/Pasted%20image%2020260401152358.png)
 
 > Access the ArgoCD UI at the external LoadBalancer IP shown above.
 > Login: `admin` / password from the command above.
@@ -378,7 +252,7 @@ kubectl get svc -n 3tirewebapp-dev
 kubectl get deployments -n 3tirewebapp-dev
 ```
 
-![All pods Running — postgres 1/1, backend 2/2, frontend 2/2, services showing ClusterIP and LoadBalancer entries](Pasted%20image%2020260401152430.png)
+![All pods Running — postgres 1/1, backend 2/2, frontend 2/2, services showing ClusterIP and LoadBalancer entries](images/Pasted%20image%2020260401152430.png)
 
 > All pods show `STATUS: Running`. Postgres uses `Recreate` strategy (required for `ReadWriteOnce` PVC). Frontend and backend scale to 2 replicas as defined in `kustomization.yaml`.
 
@@ -410,7 +284,7 @@ kubectl get secrets -n 3tirewebapp-dev
 kubectl get secretproviderclass -n 3tirewebapp-dev
 ```
 
-![Key Vault showing 4 secrets: postgres-username, postgres-password, postgres-database, postgres-connection-string](Pasted%20image%2020260401152607.png)
+![Key Vault showing 4 secrets: postgres-username, postgres-password, postgres-database, postgres-connection-string](images/Pasted%20image%2020260401152607.png)
 
 > **4 secrets stored in Key Vault:**
 >
@@ -504,7 +378,7 @@ kubectl top pods -n 3tirewebapp-dev
 kubectl top pods -n argocd
 ```
 
-![kubectl top nodes and top pods showing CPU/memory within defined resource limits](Pasted%20image%2020260401152703.png)
+![kubectl top nodes and top pods showing CPU/memory within defined resource limits](images/Pasted%20image%2020260401152703.png)
 
 ### Resource Limits (from manifest files)
 
@@ -559,7 +433,7 @@ Complete evidence of a working end-to-end deployment.
 terraform output
 ```
 
-![Terraform output — key_vault_name, aks_cluster_name, resource_group_name, kubelet_identity_client_id, tenant_id all shown](Pasted%20image%2020260401142030.png)
+![Terraform output — key_vault_name, aks_cluster_name, resource_group_name, kubelet_identity_client_id, tenant_id all shown](images/Pasted%20image%2020260401142030.png)
 
 ---
 
@@ -569,7 +443,7 @@ terraform output
 kubectl get nodes
 ```
 
-![Two worker nodes STATUS Ready, correct Kubernetes version 1.32.x](Pasted%20image%2020260401143849.png)
+![Two worker nodes STATUS Ready, correct Kubernetes version 1.32.x](images/Pasted%20image%2020260401143849.png)
 
 ---
 
@@ -579,7 +453,7 @@ kubectl get nodes
 kubectl get namespaces
 ```
 
-![Namespaces: default, kube-system, argocd, 3tirewebapp-dev, external-secrets-system — all Active](Pasted%20image%2020260401151654.png)
+![Namespaces: default, kube-system, argocd, 3tirewebapp-dev, external-secrets-system — all Active](images/Pasted%20image%2020260401151654.png)
 
 ---
 
@@ -589,7 +463,7 @@ kubectl get namespaces
 az aks show --resource-group aks-gitops-rg-dev --name aks-gitops-cluster-dev -o table
 ```
 
-![AKS cluster provisioning state Succeeded, node count, location centralindia](Pasted%20image%2020260401152001.png)
+![AKS cluster provisioning state Succeeded, node count, location centralindia](images/Pasted%20image%2020260401152001.png)
 
 ---
 
@@ -599,7 +473,7 @@ az aks show --resource-group aks-gitops-rg-dev --name aks-gitops-cluster-dev -o 
 az group list -o table
 ```
 
-![Resource groups listing — aks-gitops-rg-dev, rg-terraform-state visible](Pasted%20image%2020260401152048.png)
+![Resource groups listing — aks-gitops-rg-dev, rg-terraform-state visible](images/Pasted%20image%2020260401152048.png)
 
 ---
 
@@ -609,7 +483,7 @@ az group list -o table
 az aks show --resource-group aks-gitops-rg-dev --name aks-gitops-cluster-dev -o table
 ```
 
-![AKS show — identity SystemAssigned, network plugin azure, key vault secrets provider enabled](Pasted%20image%2020260401152140.png)
+![AKS show — identity SystemAssigned, network plugin azure, key vault secrets provider enabled](images/Pasted%20image%2020260401152140.png)
 
 ---
 
@@ -619,7 +493,7 @@ az aks show --resource-group aks-gitops-rg-dev --name aks-gitops-cluster-dev -o 
 kubectl get nodes -o wide
 ```
 
-![Nodes with internal IPs, OS image, container runtime shown — all Ready](Pasted%20image%2020260401152229.png)
+![Nodes with internal IPs, OS image, container runtime shown — all Ready](images/Pasted%20image%2020260401152229.png)
 
 ---
 
@@ -630,7 +504,7 @@ kubectl get pods -n argocd
 kubectl get applications -n argocd
 ```
 
-![ArgoCD pods all Running, 3tirewebapp-dev Synced and Healthy](Pasted%20image%2020260401152358.png)
+![ArgoCD pods all Running, 3tirewebapp-dev Synced and Healthy](images/Pasted%20image%2020260401152358.png)
 
 ---
 
@@ -641,7 +515,7 @@ kubectl get pods -n 3tirewebapp-dev
 kubectl get svc -n 3tirewebapp-dev
 ```
 
-![postgres 1/1 Running, backend 2/2 Running, frontend 2/2 Running — all services with correct ports](Pasted%20image%2020260401152430.png)
+![postgres 1/1 Running, backend 2/2 Running, frontend 2/2 Running — all services with correct ports](images/Pasted%20image%2020260401152430.png)
 
 ---
 
@@ -652,7 +526,7 @@ az keyvault secret list --vault-name kv-dev-ks1s3mip -o table
 kubectl get secrets -n 3tirewebapp-dev
 ```
 
-![4 secrets in Key Vault, postgres-credentials-from-kv Kubernetes secret present](Pasted%20image%2020260401152607.png)
+![4 secrets in Key Vault, postgres-credentials-from-kv Kubernetes secret present](images/Pasted%20image%2020260401152607.png)
 
 ---
 
@@ -663,7 +537,7 @@ kubectl top nodes
 kubectl top pods -n 3tirewebapp-dev
 ```
 
-![Node and pod CPU/memory usage healthy, well within defined resource limits](Pasted%20image%2020260401152703.png)
+![Node and pod CPU/memory usage healthy, well within defined resource limits](images/Pasted%20image%2020260401152703.png)
 
 ---
 
