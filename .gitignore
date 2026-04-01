@@ -34,3 +34,7 @@ secrets/
 *.pem
 *.key
 !*.tf
+
+.credentials
+*.md
+

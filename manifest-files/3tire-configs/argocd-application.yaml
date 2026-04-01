@@ -8,9 +8,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/itsBaivab/gitops-configs.git
+    repoURL: https://github.com/JiNaL1112/Azure_Terraform_Project_5
     targetRevision: HEAD
-    path: 3tire-configs
+    path: manifest-files/3tire-configs
   destination:
     server: https://kubernetes.default.svc
     namespace: 3tirewebapp-dev
