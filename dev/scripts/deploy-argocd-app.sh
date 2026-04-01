@@ -14,11 +14,15 @@ RESOURCE_GROUP=$(terraform output -raw resource_group_name 2>/dev/null || echo "
 echo "📋 Cluster: $CLUSTER_NAME"
 echo "📋 Resource Group: $RESOURCE_GROUP"
 
+
+mkdir -p /home/jinalpatel/.kube
+az aks get-credentials --resource-group "$RESOURCE_GROUP" --name "$CLUSTER_NAME" --admin --overwrite-existing --file /home/jinalpatel/.kube/config
+export KUBECONFIG=/home/jinalpatel/.kube/config
 # Get admin credentials for the cluster
-if ! az aks get-credentials --resource-group "$RESOURCE_GROUP" --name "$CLUSTER_NAME" --admin --overwrite-existing; then
-    echo "❌ Failed to get cluster credentials"
-    exit 1
-fi
+# if ! az aks get-credentials --resource-group "$RESOURCE_GROUP" --name "$CLUSTER_NAME" --admin --overwrite-existing; then
+#     echo "❌ Failed to get cluster credentials"
+#     exit 1
+# fi
 
 echo "✅ Cluster credentials configured"
 

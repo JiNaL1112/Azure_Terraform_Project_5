@@ -16,7 +16,10 @@ POSTGRES_DATABASE_SECRET=$8
 POSTGRES_CONNECTION_STRING_SECRET=$9
 
 echo "🔐 Getting AKS cluster credentials..."
-az aks get-credentials --resource-group "${RESOURCE_GROUP_NAME}" --name "${CLUSTER_NAME}" --admin --overwrite-existing
+# az aks get-credentials --resource-group "${RESOURCE_GROUP_NAME}" --name "${CLUSTER_NAME}" --admin --overwrite-existing
+mkdir -p /home/jinalpatel/.kube
+az aks get-credentials --resource-group "${RESOURCE_GROUP_NAME}" --name "${CLUSTER_NAME}" --admin --overwrite-existing --file /home/jinalpatel/.kube/config
+export KUBECONFIG=/home/jinalpatel/.kube/config
 
 echo "📦 Installing External Secrets Operator..."
 helm repo add external-secrets https://charts.external-secrets.io

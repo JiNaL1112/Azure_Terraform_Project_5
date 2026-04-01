@@ -19,7 +19,7 @@ commonAnnotations:
 # Centralized image management
 images:
   - name: jpatel6625/frontend
-    newTag: v2
+    newTag: latest
   - name: jpatel6625/backend
     newTag: latest
   - name: postgres
