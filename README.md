@@ -30,7 +30,7 @@
 
 Shows the complete CI/CD pipeline from developer commit through Terraform provisioning to live application delivery.
 
-![Hight-level Diagram](images/diagram-export-4-1-2026-4_40_05-PM.png)
+![Hight-level Diagram](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/diagram-export-4-1-2026-4_40_05-PM.png)
 
 ---
 
@@ -38,7 +38,7 @@ Shows the complete CI/CD pipeline from developer commit through Terraform provis
 
 Shows the internal AKS structure — namespaces, deployments, pods, services, secrets, storage, and ingress for the 3-tier application.
 
-![ Internal Architecture](images/diagram-export-4-1-2026-5_38_11-PM.png)
+![ Internal Architecture](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/diagram-export-4-1-2026-5_38_11-PM.png)
 
 ---
 
@@ -137,7 +137,7 @@ terraform output
 
 > **After `terraform apply` completes successfully:**
 
-![Terraform apply complete — showing resource group, AKS cluster, Key Vault provisioned](images/Pasted%20image%2020260401142030.png)
+![Terraform apply complete — showing resource group, AKS cluster, Key Vault provisioned](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401142030.png)
 
 ### Azure Resource Group
 
@@ -156,11 +156,11 @@ az aks show \
   -o table
 ```
 
-![az aks list — cluster name, location, kubernetes version, provisioning state Succeeded](images/Pasted%20image%2020260401152001.png)
+![az aks list — cluster name, location, kubernetes version, provisioning state Succeeded](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401152001.png)
 
-![az group list — resource groups including aks-gitops-rg-dev and rg-terraform-state](images/Pasted%20image%2020260401152048.png)
+![az group list — resource groups including aks-gitops-rg-dev and rg-terraform-state](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401152048.png)
 
-![az aks show — node count, identity type SystemAssigned, network plugin azure](images/Pasted%20image%2020260401152140.png)
+![az aks show — node count, identity type SystemAssigned, network plugin azure](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401152140.png)
 
 ---
 
@@ -181,7 +181,7 @@ kubectl get namespaces
 kubectl get all -A
 ```
 
-![kubectl get nodes — both nodes STATUS Ready, correct kubernetes version](images/Pasted%20image%2020260401152229.png)
+![kubectl get nodes — both nodes STATUS Ready, correct kubernetes version](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401152229.png)
 
 > All nodes show `STATUS: Ready`. The dev cluster runs auto-scaling (min 1, max 5 nodes).
 
@@ -206,7 +206,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret \
   -o jsonpath="{.data.password}" | base64 -d && echo
 ```
 
-![ArgoCD pods all Running, argocd-server LoadBalancer with external IP, 3tirewebapp-dev application Synced and Healthy](images/Pasted%20image%2020260401152358.png)
+![ArgoCD pods all Running, argocd-server LoadBalancer with external IP, 3tirewebapp-dev application Synced and Healthy](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401152358.png)
 
 > Access the ArgoCD UI at the external LoadBalancer IP shown above.
 > Login: `admin` / password from the command above.
@@ -252,7 +252,7 @@ kubectl get svc -n 3tirewebapp-dev
 kubectl get deployments -n 3tirewebapp-dev
 ```
 
-![All pods Running — postgres 1/1, backend 2/2, frontend 2/2, services showing ClusterIP and LoadBalancer entries](images/Pasted%20image%2020260401152430.png)
+![All pods Running — postgres 1/1, backend 2/2, frontend 2/2, services showing ClusterIP and LoadBalancer entries](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401152430.png)
 
 > All pods show `STATUS: Running`. Postgres uses `Recreate` strategy (required for `ReadWriteOnce` PVC). Frontend and backend scale to 2 replicas as defined in `kustomization.yaml`.
 
@@ -284,7 +284,7 @@ kubectl get secrets -n 3tirewebapp-dev
 kubectl get secretproviderclass -n 3tirewebapp-dev
 ```
 
-![Key Vault showing 4 secrets: postgres-username, postgres-password, postgres-database, postgres-connection-string](images/Pasted%20image%2020260401152607.png)
+![Key Vault showing 4 secrets: postgres-username, postgres-password, postgres-database, postgres-connection-string](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401152607.png)
 
 > **4 secrets stored in Key Vault:**
 >
@@ -378,7 +378,7 @@ kubectl top pods -n 3tirewebapp-dev
 kubectl top pods -n argocd
 ```
 
-![kubectl top nodes and top pods showing CPU/memory within defined resource limits](images/Pasted%20image%2020260401152703.png)
+![kubectl top nodes and top pods showing CPU/memory within defined resource limits](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401152703.png)
 
 ### Resource Limits (from manifest files)
 
@@ -433,7 +433,7 @@ Complete evidence of a working end-to-end deployment.
 terraform output
 ```
 
-![Terraform output — key_vault_name, aks_cluster_name, resource_group_name, kubelet_identity_client_id, tenant_id all shown](images/Pasted%20image%2020260401142030.png)
+![Terraform output — key_vault_name, aks_cluster_name, resource_group_name, kubelet_identity_client_id, tenant_id all shown](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401142030.png)
 
 ---
 
@@ -443,7 +443,7 @@ terraform output
 kubectl get nodes
 ```
 
-![Two worker nodes STATUS Ready, correct Kubernetes version 1.32.x](images/Pasted%20image%2020260401143849.png)
+![Two worker nodes STATUS Ready, correct Kubernetes version 1.32.x](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401143849.png)
 
 ---
 
@@ -453,7 +453,7 @@ kubectl get nodes
 kubectl get namespaces
 ```
 
-![Namespaces: default, kube-system, argocd, 3tirewebapp-dev, external-secrets-system — all Active](images/Pasted%20image%2020260401151654.png)
+![Namespaces: default, kube-system, argocd, 3tirewebapp-dev, external-secrets-system — all Active](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401151654.png)
 
 ---
 
@@ -463,7 +463,7 @@ kubectl get namespaces
 az aks show --resource-group aks-gitops-rg-dev --name aks-gitops-cluster-dev -o table
 ```
 
-![AKS cluster provisioning state Succeeded, node count, location centralindia](images/Pasted%20image%2020260401152001.png)
+![AKS cluster provisioning state Succeeded, node count, location centralindia](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401152001.png)
 
 ---
 
@@ -473,7 +473,7 @@ az aks show --resource-group aks-gitops-rg-dev --name aks-gitops-cluster-dev -o 
 az group list -o table
 ```
 
-![Resource groups listing — aks-gitops-rg-dev, rg-terraform-state visible](images/Pasted%20image%2020260401152048.png)
+![Resource groups listing — aks-gitops-rg-dev, rg-terraform-state visible](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401152048.png)
 
 ---
 
@@ -483,7 +483,7 @@ az group list -o table
 az aks show --resource-group aks-gitops-rg-dev --name aks-gitops-cluster-dev -o table
 ```
 
-![AKS show — identity SystemAssigned, network plugin azure, key vault secrets provider enabled](images/Pasted%20image%2020260401152140.png)
+![AKS show — identity SystemAssigned, network plugin azure, key vault secrets provider enabled](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401152140.png)
 
 ---
 
@@ -493,7 +493,7 @@ az aks show --resource-group aks-gitops-rg-dev --name aks-gitops-cluster-dev -o 
 kubectl get nodes -o wide
 ```
 
-![Nodes with internal IPs, OS image, container runtime shown — all Ready](images/Pasted%20image%2020260401152229.png)
+![Nodes with internal IPs, OS image, container runtime shown — all Ready](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401152229.png)
 
 ---
 
@@ -504,7 +504,7 @@ kubectl get pods -n argocd
 kubectl get applications -n argocd
 ```
 
-![ArgoCD pods all Running, 3tirewebapp-dev Synced and Healthy](images/Pasted%20image%2020260401152358.png)
+![ArgoCD pods all Running, 3tirewebapp-dev Synced and Healthy](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401152358.png)
 
 ---
 
@@ -515,7 +515,7 @@ kubectl get pods -n 3tirewebapp-dev
 kubectl get svc -n 3tirewebapp-dev
 ```
 
-![postgres 1/1 Running, backend 2/2 Running, frontend 2/2 Running — all services with correct ports](images/Pasted%20image%2020260401152430.png)
+![postgres 1/1 Running, backend 2/2 Running, frontend 2/2 Running — all services with correct ports](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401152430.png)
 
 ---
 
@@ -526,7 +526,7 @@ az keyvault secret list --vault-name kv-dev-ks1s3mip -o table
 kubectl get secrets -n 3tirewebapp-dev
 ```
 
-![4 secrets in Key Vault, postgres-credentials-from-kv Kubernetes secret present](images/Pasted%20image%2020260401152607.png)
+![4 secrets in Key Vault, postgres-credentials-from-kv Kubernetes secret present](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401152607.png)
 
 ---
 
@@ -537,7 +537,7 @@ kubectl top nodes
 kubectl top pods -n 3tirewebapp-dev
 ```
 
-![Node and pod CPU/memory usage healthy, well within defined resource limits](images/Pasted%20image%2020260401152703.png)
+![Node and pod CPU/memory usage healthy, well within defined resource limits](https://raw.githubusercontent.com/JiNaL1112/Azure_Terraform_Project_5/main/images/Pasted%20image%2020260401152703.png)
 
 ---
 
